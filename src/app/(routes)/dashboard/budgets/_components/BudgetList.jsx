@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useUser } from "@clerk/nextjs";
 import BudgetItem from "./BudgetItem";
@@ -12,9 +12,9 @@ function BudgetList() {
     if (user) {
       getBudgetList();
     }
-  }, [user]);
+  }, [user , getBudgetList]);
 
-  const getBudgetList = async () => {
+  const getBudgetList = useCallback(async () => {
     try {
       const response = await axios.get("/api/budget", {
         params: { userEmail: user?.primaryEmailAddress?.emailAddress },
@@ -28,7 +28,7 @@ function BudgetList() {
     } catch (error) {
       console.log("error fetching budget", error);
     }
-  };
+  },[user])
 
   return (
     <div className="mt-7">

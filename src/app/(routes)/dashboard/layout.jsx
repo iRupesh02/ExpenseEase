@@ -1,7 +1,7 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import React, {useEffect } from "react";
+import React, {useCallback, useEffect } from "react";
 import axios from "axios";
 import SideNav from "./_components/SideNav";
 import DashBoardHeader from "./_components/DashBoardHeader";
@@ -10,7 +10,7 @@ function Layout({ children }) {
   const { user } = useUser();
   const router = useRouter();
 
-  const checkUserBudget = async () => {
+  const checkUserBudget  = useCallback(async () => {
     const email = user?.primaryEmailAddress?.emailAddress;
     if (!email) return;
 
@@ -32,13 +32,13 @@ function Layout({ children }) {
     } catch (error) {
       console.log("Error fetching budgets:", error);
     }
-  }
-
+  },[user , router]
+) 
   useEffect(() => {
     if (user) {
       checkUserBudget();
     }
-  }, [user, checkUserBudget]);
+  }, [user , checkUserBudget]);
 
   return (
     <>

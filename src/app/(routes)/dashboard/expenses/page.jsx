@@ -1,9 +1,9 @@
 'use client'
-import React , {useEffect , useState} from 'react'
+import React , {useCallback, useEffect , useState} from 'react'
 import ExpenseListTable from './_components/ExpenseListTable'
 import { useUser } from '@clerk/nextjs'
 import axios from 'axios'
-function page() {
+function Page() {
     const {user} = useUser()
   
   const [expensesList , setExpensesList] = useState([]);
@@ -11,24 +11,24 @@ function page() {
         if (user) {
           getAllExpenses();
         }
-      }, [user]);
+      }, [user , getAllExpenses]);
 
-    const getAllExpenses = async () => {
-        try {
-          const response = await axios.get('/api/expenses',{
-            params:{email:user?.primaryEmailAddress?.emailAddress}
-          })
-          if(response){
-            // console.log(response.data);
-           setExpensesList(response.data)
-            console.log(response.data);
-            
-          }
-        } catch (error) {
-          console.log('error fetching data', error);
+    const getAllExpenses = useCallback(async () => {
+      try {
+        const response = await axios.get('/api/expenses',{
+          params:{email:user?.primaryEmailAddress?.emailAddress}
+        })
+        if(response){
+          // console.log(response.data);
+         setExpensesList(response.data)
+          console.log(response.data);
           
         }
+      } catch (error) {
+        console.log('error fetching data', error);
+        
       }
+    },[user]) 
   return (
     <div className=' p-5'>
       <ExpenseListTable
@@ -39,4 +39,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

@@ -2,7 +2,7 @@
 import { Button } from "../../../../../components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import {  PenBox, Trash , ArrowLeft } from "lucide-react";
@@ -35,8 +35,8 @@ function Page() {
     if (user) {
       getBudgetInfo();
     }
-  }, [user]);
-    const getBudgetInfo = async () =>{
+  }, [user , getBudgetInfo]);
+    const getBudgetInfo = useCallback(async () =>{
       try {
         const response = await axios.get(`/api/budget/${param.id}` ,{
           params: { userEmail: user?.primaryEmailAddress?.emailAddress },
@@ -52,9 +52,9 @@ function Page() {
       } catch (error) {
         console.log("error fetching budget", error);
       }
-    }
+    },[user , getExpenseList , param.id])
   
-  const getExpenseList = async () => {
+  const getExpenseList = useCallback(async () => {
     try {
       const response = await axios.get(`/api/expenses/${param.id}`);
       if (response) {
@@ -65,7 +65,7 @@ function Page() {
       console.log("Error fetching expenses", error);
       toast("Error fetching expenses info!");
     }
-  };
+  },[param.id])
 
   const deleteBudget = async () => {
     try {
