@@ -1,7 +1,8 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-
+import { Toaster } from "../components/ui/sonner"
+import { dark } from '@clerk/themes'
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -21,13 +22,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider
+    appearance={{
+      baseTheme: dark,
+    }}
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     >
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased dark` }
         >
+           <Toaster />
           {children}
+         
         </body>
       </html>
     </ClerkProvider>
