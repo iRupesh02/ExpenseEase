@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import {  PenBox, Trash , ArrowLeft } from "lucide-react";
+import { PenBox, Trash, ArrowLeft } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,31 +29,7 @@ function Page() {
   const [budgetInfo, setbudgetInfo] = useState();
   const [expensesList, setExpensesList] = useState([]);
   const router = useRouter();
-  // const route = useRouter();
 
-  useEffect(() => {
-    if (user) {
-      getBudgetInfo();
-    }
-  }, [user , getBudgetInfo]);
-    const getBudgetInfo = useCallback(async () =>{
-      try {
-        const response = await axios.get(`/api/budget/${param.id}` ,{
-          params: { userEmail: user?.primaryEmailAddress?.emailAddress },
-        })
-        if(response){
-          setbudgetInfo(response.data)
-          getExpenseList()
-        }
-        else {
-          console.log("error fetching budget");
-        }
-        
-      } catch (error) {
-        console.log("error fetching budget", error);
-      }
-    },[user , getExpenseList , param.id])
-  
   const getExpenseList = useCallback(async () => {
     try {
       const response = await axios.get(`/api/expenses/${param.id}`);
@@ -65,7 +41,29 @@ function Page() {
       console.log("Error fetching expenses", error);
       toast("Error fetching expenses info!");
     }
-  },[param.id])
+  }, [param.id]);
+
+  const getBudgetInfo = useCallback(async () => {
+    try {
+      const response = await axios.get(`/api/budget/${param.id}`, {
+        params: { userEmail: user?.primaryEmailAddress?.emailAddress },
+      });
+      if (response) {
+        setbudgetInfo(response.data);
+        getExpenseList();
+      } else {
+        console.log("error fetching budget");
+      }
+    } catch (error) {
+      console.log("error fetching budget", error);
+    }
+  }, [user, getExpenseList, param.id]);
+
+  useEffect(() => {
+    if (user) {
+      getBudgetInfo();
+    }
+  }, [user, getBudgetInfo]);
 
   const deleteBudget = async () => {
     try {
@@ -90,13 +88,15 @@ function Page() {
   return (
     <div className="p-10">
       <h2 className="text-2xl font-bold gap-2 flex justify-between items-center">
-        
-      <span className="flex gap-2 items-center">
+        <span className="flex gap-2 items-center">
           <ArrowLeft onClick={() => router.back()} className="cursor-pointer" />
           My Expenses
         </span>
         <div className="flex items-center gap-2">
-          <EditBudget budgetInfo={budgetInfo} refreshData={()=>getBudgetInfo()}/>
+          <EditBudget
+            budgetInfo={budgetInfo}
+            refreshData={() => getBudgetInfo()}
+          />
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button className="flex gap-2" variant="destructive">
@@ -135,7 +135,6 @@ function Page() {
         <AddExpense budgetId={param.id} refreshData={() => getBudgetInfo()} />
       </div>
       <div>
-        
         <ExpenseListTable
           expensesList={expensesList}
           refreshData={() => getBudgetInfo()}

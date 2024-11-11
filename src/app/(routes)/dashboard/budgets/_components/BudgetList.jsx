@@ -8,11 +8,7 @@ import CreateBudget from "./CreateBudget";
 function BudgetList() {
   const [budgetList, setBudgetList] = useState([]);
   const { user } = useUser();
-  useEffect(() => {
-    if (user) {
-      getBudgetList();
-    }
-  }, [user , getBudgetList]);
+  
 
   const getBudgetList = useCallback(async () => {
     try {
@@ -29,6 +25,12 @@ function BudgetList() {
       console.log("error fetching budget", error);
     }
   },[user])
+
+  useEffect(() => {
+    if (user) {
+      getBudgetList();
+    }
+  }, [user , getBudgetList]);
 
   return (
     <div className="mt-7">

@@ -7,11 +7,7 @@ function Page() {
     const {user} = useUser()
   
   const [expensesList , setExpensesList] = useState([]);
-    useEffect(() => {
-        if (user) {
-          getAllExpenses();
-        }
-      }, [user , getAllExpenses]);
+   
 
     const getAllExpenses = useCallback(async () => {
       try {
@@ -29,6 +25,14 @@ function Page() {
         
       }
     },[user]) 
+
+    useEffect(() => {
+      if (user) {
+        getAllExpenses();
+      }
+    }, [user , getAllExpenses]);
+
+    
   return (
     <div className=' p-5'>
       <ExpenseListTable
